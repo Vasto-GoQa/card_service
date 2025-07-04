@@ -35,6 +35,10 @@
 
 Выполнить в консоли команду: `git clone https://github.com/Vasto-GoQa/card_service`
 
+Перейти внутрь проекта выполнив команду: ``cd card_service``
+
+Создать папку для сгенерированных Protocol Buffers файлов: ``mkdir generated``
+
 3. Установка Go плагинов из go.mod
 
 Выполнить в консоли команду: ```go mod download```
@@ -54,11 +58,12 @@
 
 6. Запуск сервера
 
-Выполнить в консоли команду: ``go run cmd/server/main.go``
+При первом запуске выполнить команду: ``go mod tidy``
+
+Выполнить в консоли команду: ``go run cmd/server/main.go cmd/server/config.go``
 
 7. Запуск автотестов
 
 ⚒️В разработке⚒️
-
 
 Author: [Vasto-GoQa](https://github.com/Vasto-GoQa)
