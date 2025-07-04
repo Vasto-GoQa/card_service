@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package card_service;
+
+option go_package = "card_service/generated";
+
+import "google/protobuf/timestamp.proto";
+
+// Сервис для работы с картами и пользователями
+service CardService {
+  // Операции с пользователями
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+
+  // Операции с картами
+  rpc CreateCard(CreateCardRequest) returns (CardResponse);
+  rpc GetCard(GetCardRequest) returns (CardResponse);
+  rpc GetAllCards(GetAllCardsRequest) returns (GetAllCardsResponse);
+  rpc DeleteCard(DeleteCardRequest) returns (DeleteCardResponse);
+  rpc GenerateCard(GenerateCardRequest) returns (CardResponse);
+}
+
+// Модели данных
+message User {
+  int32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string phone = 5;
+  string birth_date = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message Card {
+  int32 id = 1;
+  int32 user_id = 2;
+  string card_number = 3;
+  string operator_name = 4;
+  string operator_code = 5;
+  string issue_date = 6;
+  string expiry_date = 7;
+  bool is_active = 8;
+  double balance = 9;
+  google.protobuf.Timestamp created_at = 10;
+  string cardholder_full_name = 11;
+}
+
+message CardOperator {
+  int32 id = 1;
+  string name = 2;
+  string code = 3;
+}
+
+// Запросы и ответы для пользователей
+message CreateUserRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string email = 3;
+  string phone = 4;
+  string birth_date = 5;
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message GetAllUsersRequest {}
+
+message GetAllUsersResponse {
+  repeated User users = 1;
+}
+
+message UpdateUserRequest {
+  int32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string phone = 5;
+  string birth_date = 6;
+}
+
+message DeleteUserRequest {
+  int32 id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message UserResponse {
+  User user = 1;
+  string error = 2;
+}
+
+// Запросы и ответы для карт
+message CreateCardRequest {
+  int32 user_id = 1;
+  string card_number = 2;
+  int32 operator_id = 3;
+  string issue_date = 4;
+  string expiry_date = 5;
+  double balance = 6;
+}
+
+message GetCardRequest {
+  int32 id = 1;
+}
+
+message GetAllCardsRequest {}
+
+message GetAllCardsResponse {
+  repeated Card cards = 1;
+}
+
+message DeleteCardRequest {
+  int32 id = 1;
+}
+
+message DeleteCardResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GenerateCardRequest {
+  int32 user_id = 1;
+  int32 operator_id = 2;
+  double balance = 3;
+}
+
+message CardResponse {
+  Card card = 1;
+  string error = 2;
+}
