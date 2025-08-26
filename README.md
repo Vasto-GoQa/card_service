@@ -1,69 +1,120 @@
 # Card Service
 
-### gRPC сервис для управления банковскими картами и пользователями с PostgreSQL базой данных.
+A small **Go** service with **PostgreSQL** and **gRPC** definitions (see ```proto/```). The repository is set up for learning and practicing automated testing.
 
-Написан для практики создания автотестов на Go
+---
 
-# 🚀 Функциональность
+## 📋Prerequisites
 
-### Методы
+Before you begin, ensure your system meets the following requirements:
 
-* CreateUser - Создание нового пользователя в системе
-* GetUser - Получение информации о пользователе по ID
-* GetAllUsers - Получение списка всех пользователей
-* UpdateUser - Обновление информации о пользователе
-* DeleteUser - Удаление пользователя из системы
-* CreateCard - Создание новой банковской карты
-* GetCard - Получение информации о карте по ID
-* GetAllCards - Получение списка всех карт
-* DeleteCard - Удаление банковской карты
-* GenerateCard - Автоматическая генерация карты для пользователя
+- [Go](https://golang.org/) (version 1.18 or higher recommended)
+- [PostgreSQL](https://www.postgresql.org/)
+- Protocol Buffers compiler (`protoc`)
+- Go plugins for gRPC:
+  - `protoc-gen-go`
+  - `protoc-gen-go-grpc`
+- (Optional) Allure CLI (for test reports)
 
-# 📋 Требования
+---
 
-* Go
-* PostgreSQL
-* Protocol Buffers (protoc)
+## ⚒️Installation & Setup
 
-# ⚒️ Установка
+1. **Clone the repository**
 
-1. Установка Protocol Buffers
+   ```bash
+   git clone https://github.com/Vasto-GoQa/card_service.git
+   cd card_service
+2. **Install Go dependencies**
 
-Следуйте [инструкции](https://www.geeksforgeeks.org/installation-guide/how-to-install-protocol-buffers-on-windows/)
+   ```bash
+   go mod download
+3. **Generate Protocol Buffers code**
 
-2. Клонирование проекта
+Make sure you have `protoc`, `protoc-gen-go`, and `protoc-gen-go-grpc` installed.  
+Then run:
 
-Выполнить в консоли команду: `git clone https://github.com/Vasto-GoQa/card_service`
+   ```bash
+   mkdir -p generated
+   rotoc --go_out=generated --go_opt=paths=source_relative --go-grpc_out=generated --go-grpc_opt=paths=source_relative proto/card_service.proto
+   ```
 
-Перейти внутрь проекта выполнив команду: ``cd card_service``
+4. **Initialize PostgreSQL**
 
-Создать папку для сгенерированных Protocol Buffers файлов: ``mkdir generated``
+Create a new PostgreSQL database.
+Run the SQL script located at ```init/db/init.sql``` to set up tables.
 
-3. Установка Go плагинов из go.mod
+5. **Configure database connection**
 
-Выполнить в консоли команду: ```go mod download```
+Open ```config.go```.
+Update the database connection details:
 
-4. Генерация Protocol Buffers файлов
+- host
+- port
+- username
+- password
+- database name
 
-Выполнить в консоли команду:
-``protoc --go_out=generated --go_opt=paths=source_relative --go-grpc_out=generated --go-grpc_opt=paths=source_relative proto/card_service.proto``
+6. **(Optional) Clean and tidy dependencies**
 
-5. Инициализация БД
+7. **Running the Service**
 
-Выполнить скрипт из ``init/db/init.sql`` в своей СУБД
+Start the gRPC server with:
 
-6. Изменение настроек подключения БД
+```bash
+go run cmd/server/main.go cmd/server/config.go
+```
 
-В файле ``config.go`` изменить значения на те, что используются в вашем подключении
+8. **Running Tests**
 
-6. Запуск сервера
+Navigate to the test folder:
 
-При первом запуске выполнить команду: ``go mod tidy``
+```bash
+cd test/tests
+```
 
-Выполнить в консоли команду: ``go run cmd/server/main.go cmd/server/config.go``
+Run tests:
 
-7. Запуск автотестов
+```bash
+go test
+```
 
-⚒️В разработке⚒️
+9. **Generating Test Reports with Allure**
 
-Author: [Vasto-GoQa](https://github.com/Vasto-GoQa)
+After running tests, go to the Allure results folder:
+
+```bash
+cd allure-results
+```
+
+Start the Allure server to view the report:
+
+```bash
+allure serve
+```
+
+---
+
+## 🏗️Project Structure (high level)
+
+- ```cmd/server/``` – entry point for the service (main, config, wiring)
+- ```proto/``` – Protocol Buffers definitions
+- ```generated/``` – generated gRPC Go code (created by protoc)
+- ```internal/``` – internal packages (business logic, data access, etc.)
+- ```init/db/``` – database initialization scripts
+- ```test/``` – tests and reporting artifacts
+
+---
+
+## 🅰️🅿️1️⃣API Definitions
+The gRPC API is defined in ```proto/card_service.proto```. Regenerate the stubs using the Generate gRPC code step above whenever the proto changes.
+
+---
+
+## 📝Notes
+
+- This is a learning project; implementation details may evolve.
+
+- If ```protoc``` or plugins aren’t found, ensure ```GOPATH/bin``` (or the install location) is on your ```PATH```.
+
+- If the server cannot connect to PostgreSQL, double-check credentials and that the ```init.sql``` has been executed.
