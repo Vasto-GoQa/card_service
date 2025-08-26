@@ -6,24 +6,32 @@ option go_package = "card_service/generated";
 
 import "google/protobuf/timestamp.proto";
 
-// Сервис для работы с картами и пользователями
 service CardService {
-  // Операции с пользователями
-  rpc CreateUser(CreateUserRequest) returns (UserResponse);
-  rpc GetUser(GetUserRequest) returns (UserResponse);
-  rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
-  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  // Operations with users
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc CreateUser(CreateUserRequest) returns (User);
+  rpc UpdateUser(UpdateUserRequest) returns (User);
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 
-  // Операции с картами
-  rpc CreateCard(CreateCardRequest) returns (CardResponse);
-  rpc GetCard(GetCardRequest) returns (CardResponse);
-  rpc GetAllCards(GetAllCardsRequest) returns (GetAllCardsResponse);
+  // Operations with cards
+  rpc GetCard(GetCardRequest) returns (Card);
+  rpc CreateCard(CreateCardRequest) returns (Card);
   rpc DeleteCard(DeleteCardRequest) returns (DeleteCardResponse);
-  rpc GenerateCard(GenerateCardRequest) returns (CardResponse);
+
+  // Operations with transactions
+  rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse);
+  rpc CreateTransaction(CreateTransactionRequest) returns (Transaction);
+
 }
 
-// Модели данных
+// Card operator directory
+message CardOperator {
+  int32 id = 1;
+  string name = 2;
+  string code = 3;
+}
+
+// User model
 message User {
   int32 id = 1;
   string first_name = 2;
@@ -34,27 +42,29 @@ message User {
   google.protobuf.Timestamp created_at = 7;
 }
 
+// Bank card model
 message Card {
   int32 id = 1;
   int32 user_id = 2;
   string card_number = 3;
-  string operator_name = 4;
-  string operator_code = 5;
-  string issue_date = 6;
-  string expiry_date = 7;
-  bool is_active = 8;
-  double balance = 9;
-  google.protobuf.Timestamp created_at = 10;
-  string cardholder_full_name = 11;
+  CardOperator operator = 4;
+  string issue_date = 5;   // format: "YYYY-MM-DD"
+  string expiry_date = 6;  // format: "YYYY-MM-DD"
+  bool is_active = 7;
+  double balance = 8;
+  google.protobuf.Timestamp created_at = 9;
 }
 
-message CardOperator {
+// Transaction model
+message Transaction {
   int32 id = 1;
-  string name = 2;
-  string code = 3;
+  int32 from_card_id = 2;
+  int32 to_card_id = 3;
+  double amount = 4;
+  google.protobuf.Timestamp created_at = 5;
 }
 
-// Запросы и ответы для пользователей
+// Requests and responses for users
 message CreateUserRequest {
   string first_name = 1;
   string last_name = 2;
@@ -65,12 +75,6 @@ message CreateUserRequest {
 
 message GetUserRequest {
   int32 id = 1;
-}
-
-message GetAllUsersRequest {}
-
-message GetAllUsersResponse {
-  repeated User users = 1;
 }
 
 message UpdateUserRequest {
@@ -91,12 +95,7 @@ message DeleteUserResponse {
   string message = 2;
 }
 
-message UserResponse {
-  User user = 1;
-  string error = 2;
-}
-
-// Запросы и ответы для карт
+// Requests and responses for cards
 message CreateCardRequest {
   int32 user_id = 1;
   string card_number = 2;
@@ -110,12 +109,6 @@ message GetCardRequest {
   int32 id = 1;
 }
 
-message GetAllCardsRequest {}
-
-message GetAllCardsResponse {
-  repeated Card cards = 1;
-}
-
 message DeleteCardRequest {
   int32 id = 1;
 }
@@ -125,13 +118,18 @@ message DeleteCardResponse {
   string message = 2;
 }
 
-message GenerateCardRequest {
-  int32 user_id = 1;
-  int32 operator_id = 2;
-  double balance = 3;
+// Requests and responses for transactions
+message CreateTransactionRequest {
+  int32 from_card_id = 1;
+  int32 to_card_id = 2;
+  double amount = 3;
 }
 
-message CardResponse {
-  Card card = 1;
-  string error = 2;
+message GetTransactionRequest {
+  int32 from_card_id = 1;
+  int32 to_card_id = 2;
+}
+
+message GetTransactionResponse {
+  repeated Transaction transactions = 1;
 }

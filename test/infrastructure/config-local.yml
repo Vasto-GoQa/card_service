@@ -1,0 +1,7 @@
+cardService:
+  port: 50051
+  host: localhost
+
+logger:
+  isDevMode: true
+  level: debug

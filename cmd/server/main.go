@@ -13,23 +13,22 @@ import (
 )
 
 func main() {
-	// Подключение к базе данных
+	// Connect to the database
 	db, err := database.NewDB(DbHost, DbPort, DbUser, DbPassword, DbName)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
 
-	// Создание репозиториев
+	// Create repositories
 	userRepo := repository.NewUserRepository(db)
 	cardRepo := repository.NewCardRepository(db)
+	transactionRepo := repository.NewTransactionRepository(db)
 
-	// Создание gRPC сервера
 	grpcServer := grpc.NewServer()
-	cardService := service.NewCardServiceServer(userRepo, cardRepo)
-	pb.RegisterCardServiceServer(grpcServer, cardService)
+	pb.RegisterCardServiceServer(grpcServer, service.NewCardServiceServer(userRepo, cardRepo, transactionRepo))
 
-	// Запуск сервера
+	// Start listening on port 50051
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
