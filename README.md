@@ -1,6 +1,13 @@
-# Card Service
+# Card Service (Go + gRPC)
 
-A small **Go** service with **PostgreSQL** and **gRPC** definitions (see ```proto/```). The repository is set up for learning and practicing automated testing.
+Card Service is an **educational project** written in Go that provides a **gRPC API** for practicing test automation.  
+It simulates three main entities:  
+
+- **Cards**  
+- **Transactions**  
+- **Users**  
+
+The service is intended as a sandbox for QA engineers, automation testers, and developers to explore gRPC, write tests, and practice real-world scenarios.
 
 ---
 
@@ -29,7 +36,7 @@ Before you begin, ensure your system meets the following requirements:
 
    ```bash
    go mod download
-3. **Generate Protocol Buffers code**
+3. (If you haven't pb.go files) **Generate Protocol Buffers code**
 
 Make sure you have `protoc`, `protoc-gen-go`, and `protoc-gen-go-grpc` installed.  
 Then run:
@@ -95,6 +102,23 @@ allure serve
 
 ---
 
+## 🧪 Automated Tests
+
+The repository already includes **automated tests** for:
+
+- **Cards** → `test/tests/card_test.go`  
+- **Transactions** → `test/tests/transaction_test.go`  
+
+👉 The **Users** entity is intentionally left without tests.
+
+**This is your practice assignment:**
+
+- Explore the `user_service.go` API, user model and operations with users which we have in `card_service.proto`.  
+- Write gRPC tests (in Go, Python, or another language).  
+- Cover both **positive** and **negative** cases
+
+---
+
 ## 🏗️Project Structure (high level)
 
 - ```cmd/server/``` – entry point for the service (main, config, wiring)
@@ -107,6 +131,7 @@ allure serve
 ---
 
 ## 🅰️🅿️1️⃣API Definitions
+
 The gRPC API is defined in ```proto/card_service.proto```. Regenerate the stubs using the Generate gRPC code step above whenever the proto changes.
 
 ---
@@ -118,3 +143,19 @@ The gRPC API is defined in ```proto/card_service.proto```. Regenerate the stubs 
 - If ```protoc``` or plugins aren’t found, ensure ```GOPATH/bin``` (or the install location) is on your ```PATH```.
 
 - If the server cannot connect to PostgreSQL, double-check credentials and that the ```init.sql``` has been executed.
+
+---
+
+## 🎯 Who is this project for?
+
+- **Beginners** → learn gRPC API testing.  
+- **Automation engineers** → practice building robust test suites.  
+- **Mentors** → use as a workshop/demo project.  
+
+---
+
+## 💬 Feedback
+
+Project repo: [Card Service on GitHub](https://github.com/Vasto-GoQa/card_service)  
+
+Please leave suggestions and feedback in [GitHub Issues](https://github.com/Vasto-GoQa/card_service/issues).
